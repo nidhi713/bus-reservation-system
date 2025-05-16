@@ -1,0 +1,194 @@
+#include<iostream>
+#include<iomanip> //for setw
+#include<string>
+
+using namespace std;
+
+class Bus{
+private: 
+    string bus_number;
+    string bus_driver;
+    string bus_arrival;
+    string bus_depart;
+    string b_from;
+    string b_to;
+    string bus_seat[8][4];  //8->row , 4->Colomn
+    
+public:
+    void addNewBus();
+    void makeReservation(Bus buses[], int busIdx);
+    void clearSeat();
+    void viewBusDetails();
+    void showAvailableBuses(Bus buses[]);
+    void showSeatAvailability(int busIdx);
+    void displayLine(char ch);
+};
+
+void Bus :: addNewBus(){
+      
+      cout<<"Enter the Bus Number\n";
+      cin>>bus_number;
+      
+      cout<<"\nEnter the driver Name\n";
+      cin>>bus_driver;
+      
+      cout<<"\nArrival Time\n";
+      cin>>bus_arrival;
+      
+      cout<<"\nDeparture Time\n";
+      cin>>bus_depart;
+      
+      cout<<"\nFrom\n";
+      cin>>b_from;
+      
+      cout<<"\nTo\n";
+      cin>>b_to;
+      
+      clearSeat();
+      cout<<"\nNew Bus added successfully.\n";
+}
+
+void Bus :: showSeatAvailability(int busIdx){
+      cout<<"Seat Availibility:\n";
+      int seatNumber = 1;
+      
+      for(int i=0; i<8; i++){
+            for(int j=0; j<4; j++){
+                  cout<<setw(3)<<left<<seatNumber<<".";
+                  cout<<setw(3)<<left<<bus_seat[i][j];
+                  seatNumber++;
+            }
+            cout<<"\n";
+      }
+      cout<<"\nThere are "<<(32 - seatNumber + 1)<<" seats Available in bus Number : "<<bus_number<<"\n";
+}
+
+void Bus :: makeReservation(Bus buses[], int busIdx){
+      showSeatAvailability(busIdx); //current seat availability
+      
+      cout<<"Enter seat number\n";
+      int seatNumber;
+      cin>>seatNumber;
+      
+      //check the entered seat number is valid or not
+      if(seatNumber<1 || seatNumber>32){
+            cout<<"Invalid Seat Number!\n";
+            cout<<"It should be in range 1 to 32\n";
+            return;
+      }
+      
+      int row = (seatNumber-1)/4;
+      int col = (seatNumber-1)%4;
+      
+      if(buses[busIdx].bus_seat[row][col] == "Empty"){
+            cout<<"Enter Passanger's Name :\n";
+            cin>>buses[busIdx].bus_seat[row][col]; //Passanger's name stored in the seat
+            
+            cout<<"Reservation Successfull\n";
+      }else{
+            cout<<"This seat is already reserved. please choose another seat Number\n";
+      }
+}
+
+void Bus :: clearSeat(){
+      for(int i=0; i<8; i++){
+            for(int j=0; j<4; j++){
+                  bus_seat[i][j] = "Empty";
+            }
+      }
+}
+
+void Bus :: displayLine(char ch){
+      for(int i=60; i>0; i++){
+            cout<<ch;
+      }
+      cout<<'\n';
+}
+
+void Bus :: viewBusDetails(){
+      displayLine('*');
+      
+      cout<<"Bus Number :\t"<<bus_number<<"\nDriver Name :\t"<<bus_driver
+      <<"\t\tArrival Time :\t"<<bus_arrival<<"\tDeparture Time :"<<bus_depart
+      <<"\nFrom :\t\t"<<b_from<<"\t\tTo :\t\t"<<b_to<<"\n";
+      
+      displayLine('*');
+      
+      showSeatAvailability(0); //Available seat for this bus
+}
+
+void Bus :: showAvailableBuses(Bus buses[]){
+      displayLine('*');
+      
+      cout<<"Here's the Available buses :\n";
+      for(int i=0; i<5; i++){ //assume 5 buses
+            if(!buses[i].bus_number.empty()){ //it means bus is Available
+                  
+                  cout<<"Bus Number :"<<buses[i].bus_number
+                      <<"\tDriver :"<<buses[i].bus_driver
+                      <<"\tFrom :"<<buses[i].b_from
+                      <<"\tTo :"<<buses[i].b_to<<"\n";
+            }
+      }
+      displayLine('_');
+}
+
+
+int main(){
+      const int MAX_BUS = 5;
+      Bus buses[MAX_BUS];
+      
+      int choice;
+      
+      
+      while(true){
+            cout<<"\n\n";
+            cout<<"\t\t***Bus Reservation System***";
+            cout<<"\n\n";
+            cout<<"\t\t\t1.Add New Bus\n"
+                <<"\t\t\t2.Make Reservation\n"
+                <<"\t\t\t3.View Reservation\n"
+                <<"\t\t\t4.Show Available Buses\n"
+                <<"\t\t\t5.Exit";
+                
+            cout<<"\n\t\tEnter your choice: "<<endl;
+            cin>>choice;
+            
+            switch(choice){
+                  case 1:
+                  
+                      buses[0].addNewBus();
+                  break; 
+                  
+                  case 2:
+                  
+                      int busIdx;
+                      cout<<"Enter Bus Index for Reservation"<<endl;
+                      cin>>busIdx;
+                      if(busIdx>=0 && busIdx<MAX_BUS){
+                              buses[0].makeReservation(buses,busIdx);    
+                      }else{
+                            cout<<"Invalid Bus Index\n";
+                      }
+                      break;
+                  
+                  case 3:
+                      buses[0].viewBusDetails();
+                      break;
+                      
+                  case 4:
+                      buses[0].showAvailableBuses(buses);
+                      break;
+                      
+                  case 5:
+                      cout<<"Exiting the program. Thank You!\n";
+                      
+                      return 0;
+                      
+                  default:
+                        cout<<"Invalid Choice. Please Try Again.\n";
+            }
+      }
+      
+      return 0;
+}
